@@ -1,6 +1,22 @@
 require "openid"
+require "openid/extensions/sreg"
+require "openid/extensions/ax"
 
 class HomeController < ApplicationController
+  skip_before_filter :verify_authenticity_token, :only => [:openid_stop, :cron]
+  before_filter :check_cron_header, :only => :cron
+  
+  def cron
+    if is_cron?
+      logger.info 'informational message'
+
+      store = GaeStore.new
+      store.cleanup_nonces
+      store.cleanup_associations
+    end
+    
+    render :nothing => true
+  end
 
   def index
 
@@ -63,13 +79,21 @@ class HomeController < ApplicationController
         @profile_data = OpenIDFields.get_profile_data(profile_data)
 
         # add the identity_url and the display_identifier to the profile data for inspection
-        @profile_data[:identity_url] = oidresp.identity_url
-        @profile_data[:display_identifier] = oidresp.identity_url
-
-        # redirect the user
-        redirect_to index_url
+        identity_url = CGI.escapeHTML(oidresp.identity_url)
+        display_identifier = CGI.escapeHTML(oidresp.identity_url)
+        @identity_text = ''
+        @identity_text << "identity_url: <strong>#{identity_url}</strong><br />" if identity_url
+        @identity_text << "display_identifier: <strong>#{display_identifier}</strong><br />" if display_identifier
+                            
+        # render :index
       when OpenID::Consumer::CANCEL
         flash[:warning] = "The login process was cancelled by the user."
+        redirect_to index_url
+      when OpenID::Consumer::FAILURE
+        flash[:error] = "There was an error while processing your request."
+        redirect_to index_url
+      when OpenID::Consumer::SETUP_NEEDED
+        flash[:warning] = "Additional setup was requested by the OpenID provider."
         redirect_to index_url
       else
         flash[:warning] = "You could not be authenticated."
@@ -79,12 +103,16 @@ class HomeController < ApplicationController
 
 private
 
-    def consumer
-      if @consumer.nil?
-        store = GaeStore.new
-        @consumer = OpenID::Consumer.new(session, store)
-      end
-      return @consumer
+  def consumer
+    if @consumer.nil?
+      store = GaeStore.new
+      @consumer = OpenID::Consumer.new(session, store)
     end
+    return @consumer
+  end
+
+  def is_cron?
+    return request.headers["X-AppEngine-Cron"]!="true"
+  end
   
 end

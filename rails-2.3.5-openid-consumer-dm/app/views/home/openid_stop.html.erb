@@ -1,0 +1,21 @@
+<% if !@identity_text.blank? %>
+    <div class="text">
+        <%= @identity_text %>
+    </div>
+<% end %>
+<% if @profile_data %>
+    <hr />
+    <div class="text">
+
+    </div>
+    <h4>Profile data</h4>
+    <div class="text">
+             <% @profile_data.each do |k, v| %>
+                <%= h k %>: <strong><%= h v %><br /></strong>
+            <% end %>
+    </div>
+<% end %>
+<hr />
+<div class="text">
+<p class="first"><%= link_to "Back to login", index_url %></p>
+</div>

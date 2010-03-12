@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Rails 2.3.5 | OpenID | Consumer | DM</title>
+	<%= javascript_include_tag 'jquery-1.2.6.min.js', :cache => false %>
+	<%= stylesheet_link_tag 'themes/warehouse/style', :media => :screen, :cache => false %>
+	<%= stylesheet_link_tag 'base', :media => :screen, :cache => false %>
+    <%= yield :head %>
+</head>
+<body>
+  <div id="container">
+    <div id="box">
+      <div class="block" id="block-login">
+        <h2>Rails 2.3.5 | OpenID | Consumer | DataMapper</h2>
+        <div class="content login">
+          <% if !flash.empty? %>
+              <div class="flash">
+                <% flash.each do |type, message| %>
+                  <div class="message <%= type %>">
+                    <p><%=  message %></p>
+                  </div>
+                <% end %>
+              </div>
+          <% end %>
+
+          <%= yield %>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
