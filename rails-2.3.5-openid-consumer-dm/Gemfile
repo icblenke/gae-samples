@@ -4,5 +4,9 @@ disable_rubygems
 bundle_path '.gems/bundler_gems'
 
 # List gems to bundle here:
+gem 'jruby-openssl', '0.5.2'
+gem 'ruby-openid', '2.1.8'
 gem 'rails_dm_datastore'
 gem 'rails', "2.3.5"
+gem "dm-core"
+gem "dm-appengine"
