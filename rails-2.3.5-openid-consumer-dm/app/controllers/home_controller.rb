@@ -4,8 +4,7 @@ require "openid/extensions/ax"
 
 class HomeController < ApplicationController
   skip_before_filter :verify_authenticity_token, :only => [:openid_stop, :cron]
-  before_filter :check_cron_header, :only => :cron
-  
+    
   def cron
     if is_cron?
       logger.info 'informational message'
