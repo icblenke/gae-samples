@@ -1,4 +1,4 @@
 cron:
-- description: clearn_up
+- description: clean up datastore
   url: /cron
   schedule: every 1 minutes
